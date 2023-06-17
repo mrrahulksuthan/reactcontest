@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Management</title>
+  <style>
+    .success-message {
+      color: green;
+    }
+    
+    .error-message {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h2>Add Employee</h2>
+  <form id="employee-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required><br>
+    
+    <label for="profession">Profession:</label>
+    <input type="text" id="profession" required><br>
+    
+    <label for="age">Age:</label>
+    <input type="number" id="age" required><br>
+    
+    <button type="submit">Add Employee</button>
+  </form>
+  
+  <div id="success-message" class="success-message" style="display: none;"></div>
+  <div id="error-message" class="error-message" style="display: none;"></div>
+  
+  <h2>Added Employees</h2>
+  <div id="employee-list"></div>
+  
+  <script>
+    let employees = [];
+    
+    function addEmployee(event) {
+      event.preventDefault();
+      
+      const nameInput = document.getElementById('name');
+      const professionInput = document.getElementById('profession');
+      const ageInput = document.getElementById('age');
+      
+      if (nameInput.value === '' || professionInput.value === '' || ageInput.value === '') {
+        showError('Please fill in all fields.');
+      } else {
+        const employee = {
+          id: employees.length + 1,
+          name: nameInput.value,
+          profession: professionInput.value,
+          age: parseInt(ageInput.value)
+        };
+        
+        employees.push(employee);
+        showSuccess('Employee added successfully.');
+        updateEmployeeList();
+        
+        nameInput.value = '';
+        professionInput.value = '';
+        ageInput.value = '';
+      }
+    }
+    
+    function updateEmployeeList() {
+      const employeeList = document.getElementById('employee-list');
+      employeeList.innerHTML = '';
+      
+      employees.forEach(function(employee) {
+        const employeeDiv = document.createElement('div');
+        employeeDiv.innerHTML = 'ID: ' + employee.id + ', Name: ' + employee.name + ', Profession: ' + employee.profession + ', Age: ' + employee.age;
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.addEventListener('click', function() {
+          deleteEmployee(employee.id);
+          employeeDiv.remove();
+        });
+        
+        employeeDiv.appendChild(deleteButton);
+        employeeList.appendChild(employeeDiv);
+      });
+    }
+    
+    function deleteEmployee(id) {
+      employees = employees.filter(function(employee) {
+        return employee.id !== id;
+      });
+    }
+    
+    function showSuccess(message) {
+      const successMessage = document.getElementById('success-message');
+      successMessage.innerText = message;
+      successMessage.style.display = 'block';
+      setTimeout(function() {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+    
+    function showError(message) {
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.innerText = message;
+      errorMessage.style.display = 'block';
+      setTimeout(function() {
+        errorMessage.style.display = 'none';
+      }, 3000);
+    }
+    
+    const employeeForm = document.getElementById('employee-form');
+    employeeForm.addEventListener('submit', addEmployee);
+  </script>
+</body>
+</html>
